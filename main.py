@@ -2,34 +2,51 @@
 import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import *
-from random import randint
+
+#Library voor grafieken
+import matplotlib.animation as animation
+import matplotlib
+#Library om matplotlib in de venster te krijgen
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 text= 70
 interface = "COM1"
 
-#functie voor de grafiek
-def value_to_y(val):
-    return 550-5*val
+#grafiek
+fig = Figure(figsize=(5, 5), dpi=100)
+ax1 = fig.add_subplot(1,1,1)
+ax2 = fig.add_subplot(1,1,1)
 
-s = 1
-x2 = 50
-y2 = value_to_y(randint(0,100))
+# Cijfers lezen uit een text file voor de lichtsensor.
+def lichtsensorGraph(i):
+    pullData = open("sampleText.txt","r").read()
+    dataArray = pullData.split('\n')
+    xar = []
+    yar = []
+    for eachLine in dataArray:
+        if len(eachLine)>1:
+            x,y = eachLine.split(',')
+            xar.append(int(x))
+            yar.append(int(y))
+    ax1.clear()
+    ax1.plot(xar,yar)
 
-def graph():
-    global s, x2, y2
-    if s == 23:
-        # new frame
-        s = 1
-        x2 = 50
-        canvas.delete('temp') # only delete items tagged as temp
-    x1 = x2
-    y1 = y2
-    x2 = 50 + s*50
-    y2 = value_to_y(randint(0,100))
-    canvas.create_line(x1, y1, x2, y2, fill='blue', tags='temp')
-    # print(s, x1, y1, x2, y2)
-    s = s+1
-    canvas.after(300, graph)
+
+# Cijfers lezen uit een text file voor de Temperatuursensor.
+def temperatuurGraph(i):
+    pullData = open("sampleText.txt","r").read()
+    dataArray = pullData.split('\n')
+    xar = []
+    yar = []
+    for eachLine in dataArray:
+        if len(eachLine)>1:
+            x,y = eachLine.split(',')
+            xar.append(int(x))
+            yar.append(int(y))
+    ax2.clear()
+    ax2.plot(xar,yar)
 
 class GUI(tk.Tk):
 
@@ -82,7 +99,7 @@ class StartPage(tk.Frame):
         label1.grid(row=1, column=0, sticky=W+E, ipady=2,  ipadx=5, padx=(30,0), pady=(50,0))
         label2.grid(row=3, column=0, sticky=W+E, ipady=2, ipadx=5, padx=(30,0), pady=(50,0))
 
-        #Knoppen
+        # Knoppen
         button1 = tk.Button(self, text="Licht", width=15, height=2, bg='lightblue', fg='black',
                             command=lambda: controller.show_frame("PageOne"))
         button2 = tk.Button(self, text="Temperatuur", width=15, height=2, bg='lightblue', fg='black',
@@ -98,31 +115,17 @@ class StartPage(tk.Frame):
         button4.grid(row=4, column=1, sticky=W)
 
 class PageOne(tk.Frame):
-
-
+    #De frame
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Lichtsensor", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        global canvas
-        canvas = Canvas(self, width=1200, height=600, bg='white')  # 0,0 is top left corner
-        canvas.pack(expand=YES, fill=BOTH)
-        canvas.create_line(50, 550, 1150, 550, width=2)  # x-axis
-        canvas.create_line(50, 550, 50, 50, width=2)
-
-        # x-axis
-        for i in range(23):
-            x = 50 + (i * 50)
-            canvas.create_line(x, 550, x, 50, width=1, dash=(2, 5))
-            canvas.create_text(x, 550, text='%d' % (10 * i), anchor=N)
-
-        # y-axis
-        for i in range(11):
-            y = 550 - (i * 50)
-            canvas.create_line(50, y, 1150, y, width=1, dash=(2, 5))
-            canvas.create_text(40, y, text='%d' % (10 * i), anchor=E)
+        #De grafiek op het scherm drawen
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
@@ -130,12 +133,19 @@ class PageOne(tk.Frame):
 
 
 class PageTwo(tk.Frame):
-
+    # De frame
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         label = tk.Label(self, text="Temperatuursensor", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
+
+        # De grafiek op het scherm drawen
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
@@ -145,19 +155,22 @@ class PageThree(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         label = tk.Label(self, text="Instellingen", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
+
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
 
 if __name__ == "__main__":
     app = GUI()
-    canvas.after(300, graph)
 
+    #menu bovenaan de venster
     menu = Menu(app)
     app.config(menu=menu)
 
+    #De dropdown menu(commando's moeten toegevoegd worden)
     subMenu = Menu(menu)
     menu.add_cascade(label="File", menu=subMenu)
     subMenu.add_command(label="COM1")
@@ -165,5 +178,9 @@ if __name__ == "__main__":
     subMenu.add_separator()
     subMenu.add_command(label="Exit")
 
+    #geeft het venster een vaste grootte
     app.geometry('1200x800')
+    ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
+    ani2 = animation.FuncAnimation(fig, temperatuurGraph, interval=1000)
+    #runt klasse 'app'
     app.mainloop()
