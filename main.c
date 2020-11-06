@@ -1,11 +1,20 @@
-#include "AVR_TTC_scheduler.h"
-#include "hardware.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+
+#include "AVR_TTC_scheduler.h"	// Scheduler data structure for storing task data, max tasks
+#include "hardware.h"			// Hardware defenities
+#include "adc.h"				// analoge input, lichtsensor en temperatuursensor
+#include <util/delay.h>
+#include "distanceheader.h"		// ultrasonor header
+#include "distance.h"			// ultrasonor sensor
+#include "uart.h"
+
 
 // The array of tasks
 sTask SCH_tasks_G[SCH_MAX_TASKS];
 
+uint8_t useSensor = LOW;	// zonnescherm wordt niet meteen automatisch aangestuurd
+uint8_t isUit = HIGH;		// zonnescherm is in.
 
 /*------------------------------------------------------------------*-
 
@@ -162,9 +171,8 @@ void SCH_Init_T1(void)
    // Values for 1ms and 10ms ticks are provided for various crystals
 
    // Hier moet de timer periode worden aangepast ....!
-   OCR1A = (uint16_t)625;   		     // 10ms = (256/16.000.000) * 625
-   TCCR1B = (1 << CS12) | (1 << WGM12);  // prescale op 64, top counter = value OCR1A (CTC mode)
-   TIMSK1 = 1 << OCIE1A;   		     // Timer 1 Output Compare A Match Interrupt Enable
+   TCCR1A = 0;
+   TCCR1B = 0;		// timers op 0, geen prescale
 }
 
 /*------------------------------------------------------------------*-
@@ -225,21 +233,96 @@ ISR(TIMER1_COMPA_vect)
 
 // ------------------------------------------------------------------
 
-void portInit(void){
-	DDRD = 0xF3;		//pd2, pd3 input, rest output
-	DDRC = 0xFC;		//pc0, pc1 input, rest output
+void initPorts(void) {
+	DDRD |= 0xfc;	// pd 2-7 input (knoppen & sonor echo), TX en RX worden niet veranderd
+	DDRB = 0x00;	// pb 0-7 output (sonor trigger en leds).
 }
 
-void turnOnLED(uint8_t led){
-	led = HIGH;
+void toggleGeel() {
+	PORTB ^= 1 << GEEL;
 }
 
-void turnOffLED(uint8_t led){
-	led = LOW;
+void inrollen(void) {
+	unsigned char index = SCH_Add_Task(toggleGeel,0,5000);	// gele led gaat knipperen.
+	uint8_t afstand = 0;
+	while(afstand > 1 || afstand < 20) {// afstand is hardcoded, moet nog veranderd worden
+		SCH_Dispatch_Tasks();			// check of er taak is om uit te voeren
+		afstand = getDistance();
+	}
+	SCH_Delete_Task(index);	// gele led stopt met knipperen.
+	PORTB |= 1 << GROEN;	// lampje dat aangeeft dat het scherm in is.
+	PORTB &= ~(1 << GEEL);	// andere lampjes uit.
+	PORTB &= ~(1 << ROOD);
 }
 
-int main()
-{
+void uitrollen(void) {
+	unsigned char index = SCH_Add_Task(toggleGeel,0,5000);	// gele led gaat knipperen.
+	uint8_t afstand = 0;
+	while(afstand > 20) {			// afstand is hardcoded, moet nog veranderd worden.
+		SCH_Dispatch_Tasks();		// check of er taak is om uit te voeren
+		afstand = getDistance();
+	}
+	SCH_Delete_Task(index);	// gele led stopt met knipperen.
+	PORTB |= 1 << ROOD;	// lampje dat aangeeft dat het scherm uit is.
+	PORTB &= ~(1 << GEEL);	// andere lampjes uit.
+	PORTB &= ~(1 << GROEN);
+}
+
+void autoBestuur(void) {	// temp & licht is hardcoded, moet nog veranderd worden.
+	if(isUit == HIGH) {								// wanneer scherm uitgerold is ->
+		if(licht() < 0x80 || temperatuur() < 0x14){	// wanneer er weinig licht is OF een temperatuur onder 20 graden ->
+			inrollen();								// scherm inrollen
+		}
+	}
+	if(isUit == LOW){								// wanneer scherm ingerold is ->
+		if(licht() > 0x80 && temperatuur() > 0x14){	// wanneer er veel licht is EN een temperatuur boven 20 graden ->
+			inrollen();								// scherm uitrollen
+		}
+	}
+}
+
+void verstuurData(void) {
+	transmit(licht());
+	_delay_ms(1000);
+	transmit(temperatuur());
+	_delay_ms(1000);
+	transmit(isUit);
+}
+
+int main(void) {
+	SCH_Init_T1();
+	initPorts();
+	initUltrasonoor();
+	uart_init();
+	SCH_Start();
+	//SCH_Add_Task(verstuurData,0,1);
+	_delay_ms(500);
+	PORTB |= 1 << BLAUW;		// blauwe led aan omdat zonnescherm op handmatig staat
+	while(1) {
+		verstuurData();
+		uint8_t pin = PIND;
+		SCH_Dispatch_Tasks();		// check of er taak is om uit te voeren
+		if(pin & (1 << aanUit)){		// knopje om handmatig in/uit te rollen is ingedrukt.
+			if(useSensor == HIGH){		// wanneer automatische bediening aan staat ->
+				useSensor = LOW;		// automatische bediening uit.
+				PORTB |= 1 << BLAUW;	// led die handmatige bedingen aangeeft gaat aan.
+			}
+			if(isUit == HIGH){		// wanneer zonnescherm uitgerold is ->
+				inrollen();			// zonnescherm inrollen.
+			}
+			else{					// wanneer zonnescherm ingerold is ->
+				uitrollen();		// zonnescherm inrollen.
+			}
+		}
+		else if(pin & (1 << automaat)){	// wanneer automatische bedienings knopje ingedrukt is ->
+			useSensor = HIGH;			// automatische bediening aan.
+			PORTB &= ~(1 << BLAUW);		// led die handmatige bedingen aangeeft gaat uit.
+		}
+		if(useSensor == HIGH) {		// wanneer automatische bediening aan staat ->
+			autoBestuur();			// zonnescherm aansturen volgens ingestelde waarde.
+		}
+		
+	}
 	// Hier moeten nog enkele statements komen ....!
 	return 0;
 }
