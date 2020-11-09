@@ -17,6 +17,7 @@ from PIL import ImageTk, Image
 
 #Verbinding met Arduino
 import serial
+import time
 
 text = 70
 interface = ""
@@ -205,12 +206,17 @@ class PageThree(tk.Frame):
         afstandLabel.place(relx=0.05, rely=0.5, anchor=W)
 
         inputUitrol = Entry(self, width=10, borderwidth=1)
-        inputUitrol.place(relx=0.14, rely=0.5, anchor=W)
+        inputUitrol.place(relx=0.17, rely=0.5, anchor=W)
 
         def inputButtonText():
-            opslaanText = tk.Label(self, text="De instellingen zijn opgeslagen")
-            opslaanText.pack()
 
+            if len(inputUitrol.get()) == 0:
+                opslaanText = tk.Label(self, text="er is niks ingevoerd")
+            elif str(inputUitrol.get()) in "1234567890":
+                opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
+            else:
+                opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
+            opslaanText.pack()
         inputButton = tk.Button(self, text="Opslaan", command=inputButtonText)
         inputButton.place(relx=0.14, rely=0.55, anchor=W)
 
