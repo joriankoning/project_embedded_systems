@@ -136,14 +136,16 @@ class StartPage(tk.Frame):
                             command=lambda: controller.show_frame("PageFour"))
 
         # White space
-        w1 = Label(self, text="                                                                        ")
+        w1 = Label(self, text="                                                                                                                        ")
         w1.grid(row=5, column=2)
+        w1.grid(row=5, column=3)
+
 
         # Foto
         img = ImageTk.PhotoImage(Image.open("./image/logo.png"))
         panel = Label(self, image=img)
         panel.image = img
-        panel.grid(row=5, column=3)
+        panel.grid(row=5, column=4, sticky=E)
 
         button1.grid(row=2, column=0)
         button2.grid(row=2, column=1, sticky=W)
@@ -188,9 +190,8 @@ class PageTwo(tk.Frame):
         canvas = FigureCanvasTkAgg(fig, self)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
+auto = True
 class PageThree(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -203,13 +204,17 @@ class PageThree(tk.Frame):
         button.pack()
 
         uitrollText = tk.Label(self, text="Uitrol instellen", font=controller.settings_font)
-        uitrollText.place(relx=0.05, rely=0.45, anchor=W)
+        uitrollText.place(relx=0.05, rely=0.25, anchor=W)
 
         afstandLabel = tk.Label(self, text="Afstand in CM:", font=(16))
-        afstandLabel.place(relx=0.05, rely=0.5, anchor=W)
+        afstandLabel.place(relx=0.05, rely=0.3, anchor=W)
 
         inputUitrol = Entry(self, width=10, borderwidth=1)
-        inputUitrol.place(relx=0.17, rely=0.5, anchor=W)
+        inputUitrol.place(relx=0.145, rely=0.301, anchor=W)
+
+        inputButton = tk.Button(self, text="Opslaan", command=lambda: inputButtonText(inputUitrol.get()))
+        inputButton.place(relx=0.19, rely=0.3, anchor=W)
+
 
         def inputButtonText(input):
 
@@ -219,15 +224,36 @@ class PageThree(tk.Frame):
                 opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
             else:
                 opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
-            opslaanText.place(relx=0.052, rely=0.53, anchor=W)
+            opslaanText.place(relx=0.05, rely=0.322, anchor=W)
             app.after(1350, lambda: opslaanText.config(text=''))
-            
-        inputButton = tk.Button(self, text="Opslaan", command=lambda: inputButtonText(inputUitrol.get()))
-        inputButton.place(relx=0.25, rely=0.5, anchor=W)
-        
-        
-        
 
+        def auto_Button():
+            if auto_Button['text'] == 'automatisch':
+                auto_Button['text'] = 'handmatig'
+            else:
+                auto_Button['text'] = 'automatisch'
+
+
+
+        Text = tk.Label(self, text="Verander naar:")
+        Text.place(relx=0.05, rely=0.35, anchor=W)
+
+        auto_Button = tk.Button(self, text="automatisch", command=auto_Button)
+        auto_Button.place(relx=0.1109, rely=0.35, anchor=W)
+
+class FullScreenApp(object):
+    def __init__(self, master, **kwargs):
+        self.master=master
+        pad=3
+        self._geom='2021212224787328957829570x66666+10+10'
+        master.geometry("{0}x{1}+0+0".format(
+            master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
+        master.bind('<Escape>',self.toggle_geom)
+    def toggle_geom(self,event):
+        geom=self.master.winfo_geometry()
+        print(geom,self._geom)
+        self.master.geometry(self._geom)
+        self._geom=geom
 
 if __name__ == "__main__":
     app = GUI()
@@ -245,7 +271,7 @@ if __name__ == "__main__":
     subMenu.add_command(label="Exit", command=quit)
 
     # geeft het venster een vaste grootte
-    app.geometry('900x600')
+    app.attributes("-fullscreen", True)
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
     ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=1000)
     # runt klasse 'app'
