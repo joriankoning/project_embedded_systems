@@ -75,6 +75,7 @@ class GUI(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.title("HarmonicaIT ")
+        self.iconbitmap('image/test.ico')
         self.title_font = tkfont.Font(family='Comic', size=18)
         self.onder_font = tkfont.Font(family='Comic', size=15)
         self.normal_font = tkfont.Font(family='Comic', size=13)
@@ -156,6 +157,9 @@ class PageOne(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="Lichtsensor", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
 
         # De grafiek op het scherm drawen
         canvas = FigureCanvasTkAgg(fig, self)
@@ -175,16 +179,14 @@ class PageTwo(tk.Frame):
 
         label = tk.Label(self, text="Temperatuursensor", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
 
         # De grafiek op het scherm drawen
         canvas = FigureCanvasTkAgg(fig, self)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
-        button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
-
 
 class PageThree(tk.Frame):
 
