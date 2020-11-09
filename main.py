@@ -23,9 +23,10 @@ text = 70
 interface = ""
 
 # grafiek
-fig = Figure(figsize=(5, 5), dpi=100)
+fig = Figure(figsize=(50, 50), dpi=100)
+fig2 = Figure(figsize=(50, 50), dpi=100)
 ax1 = fig.add_subplot(1, 1, 1)
-ax2 = fig.add_subplot(1, 1, 1)
+ax2 = fig2.add_subplot(1, 1, 1)
 
 def connectArduino(i):
     global interface
@@ -41,7 +42,7 @@ def connectArduino(i):
 
 # Cijfers lezen uit een text file voor de lichtsensor.
 def lichtsensorGraph(i):
-    pullData = open("sampleText.txt", "r").read()
+    pullData = open("Temperatuur.txt", "r").read()
     dataArray = pullData.split('\n')
     xar = []
     yar = []
@@ -56,7 +57,7 @@ def lichtsensorGraph(i):
 
 # Cijfers lezen uit een text file voor de Temperatuursensor.
 def temperatuurGraph(i):
-    pullData = open("sampleText.txt", "r").read()
+    pullData = open("Temperatuur.txt", "r").read()
     dataArray = pullData.split('\n')
     xar = []
     yar = []
@@ -242,6 +243,6 @@ if __name__ == "__main__":
     # geeft het venster een vaste grootte
     app.geometry('900x600')
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
-    ani2 = animation.FuncAnimation(fig, temperatuurGraph, interval=1000)
+    ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=1000)
     # runt klasse 'app'
     app.mainloop()

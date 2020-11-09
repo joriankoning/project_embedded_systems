@@ -1,9 +1,9 @@
 import serial
 import time
 
-ser = serial.Serial('COM5', 19200)
+ser = serial.Serial('COM4', 19200)
 
-file1 = open("Temperatuur.txt", "a")
+
 
 i=0
 
@@ -12,6 +12,7 @@ time.sleep(4)
 x=[]
 t=0
 while True:
+    file1 = open("Temperatuur.txt", "a")
     ser.write(5)
     val = ser.read()
     s = val.hex()
@@ -21,5 +22,6 @@ while True:
     x.append(t)
     print(t)
 
-    file1.write(str(t))
+    file1.write(str(t)+ "," + str(i) + "\n")
     t += 1
+    file1.close()
