@@ -1,4 +1,3 @@
-# Ik zoek naar een betere manier in de toekomst
 import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import *
@@ -18,6 +17,8 @@ from PIL import ImageTk, Image
 #Verbinding met Arduino
 import serial
 import time
+
+import os
 
 text = 70
 interface = ""
@@ -187,10 +188,10 @@ class PageTwo(tk.Frame):
         button.pack()
 
         # De grafiek op het scherm drawen
-        canvas = FigureCanvasTkAgg(fig, self)
+        canvas = FigureCanvasTkAgg(fig2, self)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-auto = True
+
 class PageThree(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -241,21 +242,9 @@ class PageThree(tk.Frame):
         auto_Button = tk.Button(self, text="automatisch", command=auto_Button)
         auto_Button.place(relx=0.1109, rely=0.35, anchor=W)
 
-class FullScreenApp(object):
-    def __init__(self, master, **kwargs):
-        self.master=master
-        pad=3
-        self._geom='2021212224787328957829570x66666+10+10'
-        master.geometry("{0}x{1}+0+0".format(
-            master.winfo_screenwidth()-pad, master.winfo_screenheight()-pad))
-        master.bind('<Escape>',self.toggle_geom)
-    def toggle_geom(self,event):
-        geom=self.master.winfo_geometry()
-        print(geom,self._geom)
-        self.master.geometry(self._geom)
-        self._geom=geom
 
 if __name__ == "__main__":
+    
     app = GUI()
 
     # menu bovenaan de venster
@@ -271,8 +260,9 @@ if __name__ == "__main__":
     subMenu.add_command(label="Exit", command=quit)
 
     # geeft het venster een vaste grootte
-    app.attributes("-fullscreen", True)
+    app.geometry("900x600")
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
     ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=1000)
     # runt klasse 'app'
+    
     app.mainloop()
