@@ -3,6 +3,9 @@ import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import *
 
+#import fotos
+from PIL import ImageTk,Image
+
 #Library voor grafieken
 import matplotlib.animation as animation
 import matplotlib
@@ -109,6 +112,16 @@ class StartPage(tk.Frame):
         button4 = tk.Button(self, text="Scherm inrollen", width=15, height=2, bg='lightgrey', fg='black',
                             command=lambda: controller.show_frame("PageFour"))
 
+        #White space
+        w1 = Label(self, text="                                                                        ")
+        w1.grid(row=5, column=2)
+
+        #Foto
+        img = ImageTk.PhotoImage(Image.open("./image/unknown.jpg"))
+        panel = Label(self, image=img)
+        panel.image = img
+        panel.grid(row=5, column=3)
+
         button1.grid(row=2, column=0)
         button2.grid(row=2, column=1, sticky=W)
         button3.grid(row=4, column=0)
@@ -179,7 +192,7 @@ if __name__ == "__main__":
     subMenu.add_command(label="Exit")
 
     #geeft het venster een vaste grootte
-    app.geometry('1200x800')
+    app.geometry('900x600')
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
     ani2 = animation.FuncAnimation(fig, temperatuurGraph, interval=1000)
     #runt klasse 'app'
