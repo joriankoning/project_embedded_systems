@@ -208,17 +208,18 @@ class PageThree(tk.Frame):
         inputUitrol = Entry(self, width=10, borderwidth=1)
         inputUitrol.place(relx=0.17, rely=0.5, anchor=W)
 
-        def inputButtonText():
+        def inputButtonText(input):
 
-            if len(inputUitrol.get()) == 0:
+            if len(input) == 0:
                 opslaanText = tk.Label(self, text="er is niks ingevoerd")
-            elif str(inputUitrol.get()) in "1234567890":
+            elif str(input) in "1234567890":
                 opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
             else:
                 opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
-            opslaanText.pack()
-        inputButton = tk.Button(self, text="Opslaan", command=inputButtonText)
-        inputButton.place(relx=0.14, rely=0.55, anchor=W)
+            opslaanText.place(relx=0.052, rely=0.53, anchor=W)
+            app.after(1350, lambda: opslaanText.config(text=''))
+        inputButton = tk.Button(self, text="Opslaan", command=lambda: inputButtonText(inputUitrol.get()))
+        inputButton.place(relx=0.25, rely=0.5, anchor=W)
 
 
 if __name__ == "__main__":
