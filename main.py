@@ -240,7 +240,7 @@ class PageThree(tk.Frame):
         Text.place(relx=0.05, rely=0.35, anchor=W)
 
         auto_Button = tk.Button(self, text="automatisch", command=auto_Button)
-        auto_Button.place(relx=0.1109, rely=0.35, anchor=W)
+        auto_Button.place(relx=0.12, rely=0.35, anchor=W)
 
 
 if __name__ == "__main__":
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     subMenu.add_command(label="Exit", command=quit)
 
     # geeft het venster een vaste grootte
-    app.geometry("900x600")
+    app.geometry("1200x800")
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
     ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=1000)
     # runt klasse 'app'
