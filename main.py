@@ -42,7 +42,7 @@ def connectArduino(i):
 
 # Cijfers lezen uit een text file voor de lichtsensor.
 def lichtsensorGraph(i):
-    pullData = open("Temperatuur.txt", "r").read()
+    pullData = open("Licht.txt", "r").read()
     dataArray = pullData.split('\n')
     xar = []
     yar = []
@@ -214,7 +214,7 @@ class PageThree(tk.Frame):
         def inputButtonText(input):
 
             if len(input) == 0:
-                opslaanText = tk.Label(self, text="er is niks ingevoerd")
+                opslaanText = tk.Label(self, text="Er is niks ingevoerd")
             elif str(input) in "1234567890":
                 opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
             else:
