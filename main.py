@@ -128,7 +128,7 @@ class StartPage(tk.Frame):
         w1.grid(row=5, column=2)
 
         #Foto
-        img = ImageTk.PhotoImage(Image.open("./image/unknown.jpg"))
+        img = ImageTk.PhotoImage(Image.open("./image/logo.png"))
         panel = Label(self, image=img)
         panel.image = img
         panel.grid(row=5, column=3)
