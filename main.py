@@ -221,8 +221,12 @@ class PageThree(tk.Frame):
                 opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
             opslaanText.place(relx=0.052, rely=0.53, anchor=W)
             app.after(1350, lambda: opslaanText.config(text=''))
+            
         inputButton = tk.Button(self, text="Opslaan", command=lambda: inputButtonText(inputUitrol.get()))
         inputButton.place(relx=0.25, rely=0.5, anchor=W)
+        
+        
+        
 
 
 if __name__ == "__main__":
