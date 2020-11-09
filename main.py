@@ -13,6 +13,9 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+#Library voor logo
+from PIL import ImageTk,Image
+
 
 text= 70
 interface = "COM1"
@@ -55,10 +58,12 @@ class GUI(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
+        
+        self.title("HarmonicaIT ")
         self.title_font = tkfont.Font(family='Comic', size=18)
         self.onder_font = tkfont.Font(family='Comic', size=15)
         self.normal_font = tkfont.Font(family='Comic', size=13)
+        self.settings_font = tkfont.Font(family='Comic', size=15)
 
 
         # Container zorgt ervoor dat alle frames op elkaar komen
@@ -94,6 +99,7 @@ class StartPage(tk.Frame):
 
         # Tekst
         label = tk.Label(self, text="Main page " + interface + "\nStatus: " + str(text) + " %", font=controller.title_font,
+        
                          justify=LEFT, anchor='w')
         label1 = tk.Label(self, text="Sensoren: ", font=controller.normal_font, anchor='w')
         label2 = tk.Label(self, text="Opties: ", font=controller.normal_font, anchor='w')
@@ -101,7 +107,12 @@ class StartPage(tk.Frame):
         label.grid(row=0, column=0, sticky=W+E, ipady=2, ipadx=5, padx=(30,0), pady=(30,0))
         label1.grid(row=1, column=0, sticky=W+E, ipady=2,  ipadx=5, padx=(30,0), pady=(50,0))
         label2.grid(row=3, column=0, sticky=W+E, ipady=2, ipadx=5, padx=(30,0), pady=(50,0))
-
+        
+        #Afbeelding van logo !!!Werkt nog niet!!!
+        #logo = ImageTk.PhotoImage(Image.open("image/logo.png"))
+        #my_logo = Label(image=logo)
+        #my_logo.pack()
+        
         # Knoppen
         button1 = tk.Button(self, text="Licht", width=15, height=2, bg='lightblue', fg='black',
                             command=lambda: controller.show_frame("PageOne"))
@@ -126,7 +137,7 @@ class StartPage(tk.Frame):
         button2.grid(row=2, column=1, sticky=W)
         button3.grid(row=4, column=0)
         button4.grid(row=4, column=1, sticky=W)
-
+        
 class PageOne(tk.Frame):
     #De frame
     def __init__(self, parent, controller):
@@ -175,6 +186,23 @@ class PageThree(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
+        
+        uitrollText = tk.Label(self, text="Uitrol instellen", font=controller.settings_font)
+        uitrollText.place(relx= 0.05, rely = 0.45, anchor= W)
+        
+        afstandLabel = tk.Label(self, text="Afstand in CM:", font=(16))
+        afstandLabel.place(relx= 0.05, rely = 0.5, anchor= W)
+        
+        inputUitrol = Entry(self, width=10, borderwidth=1 )
+        inputUitrol.place(relx= 0.14, rely = 0.5, anchor= W)
+        
+        def inputButtonText():
+            opslaanText = tk.Label(self, text="De instellingen zijn opgeslagen")
+            opslaanText.pack()
+        
+        inputButton = tk.Button(self, text="Opslaan", command=inputButtonText)
+        inputButton.place(relx= 0.14, rely = 0.55, anchor= W)
+        
 
 if __name__ == "__main__":
     app = GUI()
