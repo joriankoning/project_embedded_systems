@@ -61,10 +61,10 @@ while True:
 	#leest uit afstand.txt zodat er geschreven kan worden naar de arduino
     pullData = open("Afstand.txt", "a")
     file = open("Afstand.txt", "r").read()
-    if file != "":
+    if file != "": #Wanneer de afstand ingesteld wordt, wordt deze gestuurd naar de Arduino. Vervolgens wordt het bestand leeg gehaald ofzo
         data = file.encode()
         ser.write(data)
         pullData.truncate(0)
         print(data)
 
-    t += 1
+    t += 1 # t wordt met 1 verhoogd

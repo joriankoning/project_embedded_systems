@@ -131,7 +131,7 @@ class StartPage(tk.Frame):
         label1.grid(row=1, column=0, sticky=W + E, ipady=2, ipadx=5, padx=(30, 0), pady=(50, 0))
         label2.grid(row=3, column=0, sticky=W + E, ipady=2, ipadx=5, padx=(30, 0), pady=(50, 0))
 
-        # Knoppen
+        # Knoppen 
         button1 = tk.Button(self, text="Licht", width=15, height=2, bg='lightblue', fg='black',
                             command=lambda: controller.show_frame("PageOne"))
         button2 = tk.Button(self, text="Temperatuur", width=15, height=2, bg='lightblue', fg='black',
@@ -141,26 +141,26 @@ class StartPage(tk.Frame):
         button4 = tk.Button(self, text="Scherm inrollen", width=15, height=2, bg='lightgrey', fg='black',
                             command=lambda: controller.show_frame("PageFour"))
 
-        # White space
+        # White space zodat de foto "logo.png" op de juiste positie komt te staan
         w1 = Label(self, text="                                                                                                                        ")
         w1.grid(row=5, column=2)
         w1.grid(row=5, column=3)
 
 
-        # Foto
+        #Het plaatsen van de foto en de locatie ervan
         img = ImageTk.PhotoImage(Image.open("./image/logo.png"))
         panel = Label(self, image=img)
         panel.image = img
         panel.grid(row=5, column=4, sticky=E)
-
-        button1.grid(row=2, column=0)
+        #Het plaatsen van de buttons met de locaties waar die komt te staan
+        button1.grid(row=2, column=0) 
         button2.grid(row=2, column=1, sticky=W)
         button3.grid(row=4, column=0)
         button4.grid(row=4, column=1, sticky=W)
 
 
 class PageOne(tk.Frame):
-    # De frame
+    # Intialiseren van het fram voor pagine1, lichtsensor
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -168,7 +168,7 @@ class PageOne(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        button.pack()# Button plaatsen
 
         # De grafiek op het scherm drawen
         canvas = FigureCanvasTkAgg(fig, self)
@@ -181,16 +181,16 @@ class PageOne(tk.Frame):
 
 
 class PageTwo(tk.Frame):
-    # De frame
+    # Intialiseren van het fram voor pagine1, Temperatuursensor
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        label = tk.Label(self, text="Temperatuursensor", font=controller.title_font)
+        label = tk.Label(self, text="Temperatuursensor", font=controller.title_font) #label voor temperatuursensor
         label.pack(side="top", fill="x", pady=10)
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
-        button.pack()
+        button.pack()# Button plaatsen
 
         # De grafiek op het scherm drawen
         canvas = FigureCanvasTkAgg(fig2, self)
@@ -202,20 +202,20 @@ class PageThree(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
 
-        label = tk.Label(self, text="Instellingen", font=controller.title_font)
+        label = tk.Label(self, text="Instellingen", font=controller.title_font) #label voor instellingen
         label.pack(side="top", fill="x", pady=10)
 
         button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("StartPage"))
+                           command=lambda: controller.show_frame("StartPage")) #button voor startpaginga
         button.pack()
 
         uitrollText = tk.Label(self, text="Uitrol instellen", font=controller.settings_font)
         uitrollText.place(relx=0.05, rely=0.25, anchor=W)
 
-        afstandLabel = tk.Label(self, text="Afstand in MM:", font=(16))
+        afstandLabel = tk.Label(self, text="Afstand in MM:", font=(16)) #Label voor de tekst afstand in MM:
         afstandLabel.place(relx=0.05, rely=0.3, anchor=W)
 
-        inputUitrol = Entry(self, width=10, borderwidth=1)
+        inputUitrol = Entry(self, width=10, borderwidth=1) 
         inputUitrol.place(relx=0.145, rely=0.301, anchor=W)
 
         #De knop gebruikt de waarde van uitrollText en gebruikt de input
