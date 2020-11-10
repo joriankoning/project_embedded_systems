@@ -20,7 +20,7 @@ import time
 
 import os
 
-text = 70
+
 interface = ""
 
 # grafiek
@@ -32,7 +32,7 @@ ax2 = fig2.add_subplot(1, 1, 1)
 def connectArduino(i):
     global interface
     if i == 1:
-        arduinoData = serial.Serial('com5', 19200)
+        arduinoData = serial.Serial('com6', 19200)
         interface = "COM6"
         label["text"] = "Main page " + interface + "\nStatus: " + str(text) + " %"
     elif i == 2:
@@ -117,7 +117,7 @@ class StartPage(tk.Frame):
 
         # Tekst
         global label
-        label = tk.Label(self, text="Main page " + interface + "\nStatus: " + str(text) + " %",
+        label = tk.Label(self, text="Main page " + interface,
                          font=controller.title_font, justify=LEFT, anchor='w')
         label1 = tk.Label(self, text="Sensoren: ", font=controller.normal_font, anchor='w')
         label2 = tk.Label(self, text="Opties: ", font=controller.normal_font, anchor='w')
@@ -207,7 +207,7 @@ class PageThree(tk.Frame):
         uitrollText = tk.Label(self, text="Uitrol instellen", font=controller.settings_font)
         uitrollText.place(relx=0.05, rely=0.25, anchor=W)
 
-        afstandLabel = tk.Label(self, text="Afstand in CM:", font=(16))
+        afstandLabel = tk.Label(self, text="Afstand in MM:", font=(16))
         afstandLabel.place(relx=0.05, rely=0.3, anchor=W)
 
         inputUitrol = Entry(self, width=10, borderwidth=1)
@@ -221,26 +221,16 @@ class PageThree(tk.Frame):
 
             if len(input) == 0:
                 opslaanText = tk.Label(self, text="Er is niks ingevoerd")
-            elif str(input) in "1234567890":
+            elif str(input).isdigit():
                 opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
+                file = open("Afstand.txt", "a")
+                file.truncate(0)# Zorgt ervoor dat Temperatuur.txt leeg wordt
+                file.write('\\x'+str(input))
+                file.close()
             else:
                 opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
             opslaanText.place(relx=0.05, rely=0.322, anchor=W)
             app.after(1350, lambda: opslaanText.config(text=''))
-
-        def auto_Button():
-            if auto_Button['text'] == 'automatisch':
-                auto_Button['text'] = 'handmatig'
-            else:
-                auto_Button['text'] = 'automatisch'
-
-
-
-        Text = tk.Label(self, text="Verander naar:")
-        Text.place(relx=0.05, rely=0.35, anchor=W)
-
-        auto_Button = tk.Button(self, text="automatisch", command=auto_Button)
-        auto_Button.place(relx=0.12, rely=0.35, anchor=W)
 
 
 if __name__ == "__main__":
@@ -261,8 +251,8 @@ if __name__ == "__main__":
 
     # geeft het venster een vaste grootte
     app.geometry("1200x800")
-    ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=1000)
-    ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=1000)
+    ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=60000)
+    ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=60000)
     # runt klasse 'app'
     
     app.mainloop()
