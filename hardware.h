@@ -7,8 +7,6 @@
  *  Author: Jorian
  */ 
 
-#define F_CPU 16E6
-
 #define HIGH 0x1
 #define LOW  0x0
 
@@ -17,7 +15,7 @@
 #define GEEL 2			// gele led
 #define BLAUW 3			// blauwe led
 
-#define aanUit 4		// knopje om scherm in/uit te doen
+#define INOFUIT 4		// knopje om scherm in/uit te doen
 #define automaat 5		// knopje om scherm automatisch in/uit te doen
 
 #define TRIGGER 5		// aansluitingen voor ultrasonor sensor

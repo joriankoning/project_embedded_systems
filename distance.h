@@ -14,22 +14,14 @@
 volatile uint16_t gv_counter; // 16 bit counter value
 volatile uint8_t gv_echo; // a flag
 
-void initUltrasonoor(void) {
-	// timers zijn ingesteld in main.c.
-	// dit zorgt er voor dat wanneer de ultrasonoor sensor een interupt geeft, dat deze ook wordt opgevangen
-    EICRA = (1 << ISC10);
-    EIMSK = (1 << INT1);	// int1 = PD3
-	//interups worden aan gezet in main.c
-}
-
-uint8_t caclCM(uint16_t counter)
+uint16_t caclCM(uint16_t counter)
 {
-    return counter/58;	// counter / 58 betekend de afstand in cm 
+	return counter/58;	// counter / 58 betekend de afstand in cm
 }
 
 void sendSignal(void) {
 	if(gv_echo == 0){		//check of er niet al een pulse gestuurd is
-		//_delay_ms(50);	//Restart HC-SR04
+		_delay_ms(50);	//Restart HC-SR04
 		PORTB &=~ (1 << TRIGGER);	//sensor staat uit
 		_delay_us(1);
 		PORTB |= (1 << TRIGGER);	//een pulse van 10 microseconden
@@ -38,23 +30,29 @@ void sendSignal(void) {
 	}
 }
 
-uint8_t getDistance(void) {	// dit moet misschien nog aangepast worden.
-	sendSignal();
-	while(gv_echo == 1){
-		_delay_ms(90);
+uint16_t getDistance(void){
+	if(gv_echo == 0) {
 		sendSignal();
 	}
+	_delay_ms(120);		// delay van 100 ms, als er dan nog geen return pulse is, wordt hij ook niet meer verwacht.
+	gv_echo = 0;		// gv_echo weer op 0, zodat er een nieuwe pulse verstuurd kan worden
 	return caclCM(gv_counter);
+}
+
+void show_distance(uint16_t afstand) {
+	uint8_t byte = (afstand>>4) & 0xff; // logical shift
+	transmit(byte);
 }
 
 ISR (INT1_vect)				// interups die gegenereerd worden door de ultra sonoor sensor
 {
-	if(gv_echo == 1){		// is true wanneer de tweede pulse ontvangen wordt
+	if(gv_echo == 1){		// is true wanneer een pulse ontvangen wordt
 		TCCR1B = 0;			// timer stopt
 		gv_counter = TCNT1;	// waarde van timer wordt in gv_counter opgeslagen
 		gv_echo = 0;		// echo = 0, er kan weer een nieuwe pulse verstuurd worden
+		
 	}
-	else{					// de eerste interupt wordt gegenereerd wanneer de sensor een pulse geeft, dat is deze else
+	else{		// de eerste interupt wordt gegenereerd wanneer de sensor een pulse geeft, dat is deze else
 		gv_counter = 0;		// counter komt op 0 te staan.
 		TCCR1B = _BV(CS10);	// timer wordt gestart
 		TCNT1 = 0;			// waarde van timer wordt 0
