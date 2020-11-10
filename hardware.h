@@ -1,17 +1,22 @@
 /*
- * IncFile1.h
+ * hardware.h
+ *
+ * Hardware defenities
  *
  * Created: 3-11-2020 16:20:21
- *  Author: joria
+ *  Author: Jorian
  */ 
 
-#define HIGH 0x1;
-#define LOW 0x0;
+#define HIGH 0x1
+#define LOW  0x0
 
-#define rood = PORTD4;			// rode led
-#define groen = PORTD5;			// groene led
-#define geel = PORTD6;			// gele led
-#define blauw = PORTD7;			// blauwe led
+#define ROOD 0			// rode led
+#define GROEN 1			// groene led
+#define GEEL 2			// gele led
+#define BLAUW 3			// blauwe led
 
-#define InUit = PIND3;			// knopje om scherm in/uit te doen
-#define automaat = PIND2;		// knopje om scherm automatisch in/uit te doen
+#define INOFUIT 4		// knopje om scherm in/uit te doen
+#define automaat 5		// knopje om scherm automatisch in/uit te doen
+
+#define TRIGGER 5		// aansluitingen voor ultrasonor sensor
+#define ECHO 3			// niet aanpasbaar!
