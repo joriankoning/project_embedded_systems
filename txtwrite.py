@@ -32,29 +32,27 @@ while True:
         #Write naar Temperatuur.txt
         file1 = open("Temperatuur.txt", "a")
        
-        temp = int(tempRead.hex(), 16)
-        print("temp")
+        temp = int(tempRead.hex(), 16) #Hex omzetten
+        print("temp")# Waarde laten zien die Temperatuur stuurt
         print(temp)
         
         
-        #s = "FFBB"
-        #print("temp" + s[0:2]) Temp is de eerste twee die binnenkomen vanaf de Arduino
-        #print("licht" + s[2:4])    Licht zijn de laatste twee die binnenkomen vanaf de Arduino
+      
         #Write naar temperatuur.txt
         file1.write(str(t)+ "," + str(temp) + "\n")
         
         file1.close()
      
         
-    elif checker == 2:
+    elif checker == 2: # Als de waarde 2 gestuurd wordt dan wordt de licht waarde gestuurd vanaf de arduino
         time.sleep(1)
         lichtRead = ser.read()
 
         #schrijft naar licht.txt
         file2 = open("Licht.txt", "a")
-        licht = int(lichtRead.hex(), 16)
-        file2.write(str(t)+ "," + str(licht) + "\n")
-        print("Licht:")
+        licht = int(lichtRead.hex(), 16)#Hex omzetten
+        file2.write(str(t)+ "," + str(licht) + "\n") # Toevoegen aan licht.txt
+        print("Licht:") # Waarde laten zien die lichtsensor stuurt
         print(licht)
         file2.close()
         

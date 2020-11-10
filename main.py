@@ -21,7 +21,7 @@ import serial
 #COM6 weergeven op startpagina
 interface = ""
 
-# grafiek
+# Instellen van de grafiek
 fig = Figure(figsize=(50, 50), dpi=100)
 fig2 = Figure(figsize=(50, 50), dpi=100)
 ax1 = fig.add_subplot(1, 1, 1)
@@ -48,13 +48,13 @@ def lichtsensorGraph(i):
     #de gesplitste waardes worden in xar en yar gestopt
     pullData = open("Licht.txt", "r").read()
     dataArray = pullData.split('\n')
-    xar = []
-    yar = []
+    xar = [] # list voor x 
+    yar = [] # list voor y
     for eachLine in dataArray:
-        if len(eachLine) > 1:
+        if len(eachLine) > 1: 
             x, y = eachLine.split(',')
-            xar.append(int(x))
-            yar.append(int(y))
+            xar.append(int(x))#Toevoegen aan list xar
+            yar.append(int(y))#Toevoegen aan list yar
     ax1.clear()
     ax1.plot(xar, yar)
 
@@ -70,8 +70,8 @@ def temperatuurGraph(i):
     for eachLine in dataArray:
         if len(eachLine) > 1:
             x, y = eachLine.split(',')
-            xar.append(int(x))
-            yar.append(int(y))
+            xar.append(int(x))#Toevoegen aan list xar
+            yar.append(int(y))#Toevoegen aan list yar
     ax2.clear()
     ax2.plot(xar, yar)
 
@@ -81,7 +81,7 @@ class GUI(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
-        self.title("HarmonicaIT ")
+        self.title("HarmonicaIT ")# Title van de gui
         self.iconbitmap('image/test.ico')
         self.title_font = tkfont.Font(family='Comic', size=18)
         self.onder_font = tkfont.Font(family='Comic', size=15)
@@ -176,7 +176,7 @@ class PageOne(tk.Frame):
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("StartPage"))
+                           command=lambda: controller.show_frame("StartPage")) # Button terug naar de pagina
         button.pack()
 
 
