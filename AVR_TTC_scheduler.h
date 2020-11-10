@@ -24,4 +24,4 @@ unsigned char SCH_Delete_Task(const unsigned char);
 // hier het aantal taken aanpassen ....!!
 // Maximum number of tasks
 
-#define SCH_MAX_TASKS (5)
+#define SCH_MAX_TASKS (3)	// 3 taken: verstuur temp, verstuur licht en gele led knipperen

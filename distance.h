@@ -30,18 +30,18 @@ void sendSignal(void) {
 	}
 }
 
-uint16_t getDistance(void){
+uint16_t getDistance(void){	// krijg de huidige waarde in cm
 	if(gv_echo == 0) {
-		sendSignal();
+		sendSignal();	// verstuur een pulse naar de ultrasoon
 	}
 	_delay_ms(120);		// delay van 100 ms, als er dan nog geen return pulse is, wordt hij ook niet meer verwacht.
 	gv_echo = 0;		// gv_echo weer op 0, zodat er een nieuwe pulse verstuurd kan worden
-	return caclCM(gv_counter);
+	return caclCM(gv_counter);	// de waarde van de teller wordt omgezet naar centimeters en gereturned
 }
 
-void show_distance(uint16_t afstand) {
-	uint8_t byte = (afstand>>4) & 0xff; // logical shift
-	transmit(byte);
+void show_distance(uint16_t afstand) {	// huidige afstand versturen naar centrale wordt niet gebruikt ivm de tijd
+	uint8_t byte = (afstand>>4) & 0xff; // logical shift zodat hele centimeters gelezen worden
+	transmit(byte);						// afstand wordt verstuurd via USB.
 }
 
 ISR (INT1_vect)				// interups die gegenereerd worden door de ultra sonoor sensor

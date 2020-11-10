@@ -182,7 +182,7 @@ void SCH_Init_T2(void)
 
 void init_timer() {	// timer voor ultra sonor
 	TCCR1A = 0;
-	TCCR1B = 0;
+	TCCR1B = 0;		// timers op 0, er is geen prescale nodig
 }
 
 /*------------------------------------------------------------------*-
@@ -200,7 +200,7 @@ void init_timer() {	// timer voor ultra sonor
 
 void SCH_Start(void)
 {
-      sei();
+      sei();	// start interupts
 }
 
 /*------------------------------------------------------------------*-
@@ -235,7 +235,7 @@ void toggleGeel() {
 
 void inrollen(void) {
 	PORTB |= 1 << GROEN;	// lampje dat aangeeft dat het scherm in (aan het rollen) is.
-	PORTB &= ~(1 << ROOD);
+	PORTB &= ~(1 << ROOD);	// rode lamje uit
 	unsigned char index = SCH_Add_Task(toggleGeel,0,400);	// gele led gaat knipperen.
 	uint8_t afstand = 0xff;
 	while(afstand > 0x20) {			// minder dan 2 cm
@@ -286,19 +286,19 @@ void autoBestuur(void) {	// temp & licht is hardcoded, moet nog veranderd worden
 	}
 }
 
-void readData(uint8_t data){
-		maxAfstand = data;			// maximale uitrol is ingesteld vanaf de centrale
+void readData(uint8_t data){		// maximale uitrol is ingesteld vanaf de centrale
+		maxAfstand = data;			// deze wordt ingesteld naar arduino 
 }
 
 void verstuurTemp(void) {
 	transmit(0x01);					// 0x01 wordt verstuurd zodat de centrale weet dat het om temperatuur gaat
-	uint8_t tmp = temperatuur();	
+	uint8_t tmp = temperatuur();	// huidige temperatuur
 	transmit(tmp);					// huidige temperatuur wordt verstuurd
 }
 
 void verstuurLicht(void) {
 	transmit(0x02);				// 0x01 wordt verstuurd zodat de centrale weet dat het om het licht gaat
-	uint8_t tmp = licht();
+	uint8_t tmp = licht();		// huidige lichtintensiteit
 	transmit(tmp);				// huidige lichtintensiteit wordt verstuurd
 }
 
@@ -342,7 +342,7 @@ int main(void) {
 	return 0;
 }
 
-ISR(TIMER2_COMPB_vect)
+ISR(TIMER2_COMPB_vect)	// interupts voor AVR_TTC_scheduler
 {
 	unsigned char Index;
 	for(Index = 0; Index < SCH_MAX_TASKS; Index++)

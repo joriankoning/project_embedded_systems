@@ -14,7 +14,7 @@
 #include <avr/io.h>
 #include <stdint.h>
 
-void init_adc() {
+void init_adc() {	// 
 	// ref=Vcc, left adjust the result (8 bit resolution),
 	ADMUX = (1<<REFS0);
 	// enable the ADC & prescale = 128
@@ -40,7 +40,7 @@ uint8_t temperatuur(void) {
 }
 
 uint8_t licht(void) {
-	uint16_t volt = read_adc(1);
-	uint8_t byte = (volt>>2) & 0xff; // logical shift
+	uint16_t volt = read_adc(1);		// voltage gegeven door licht sensor
+	uint8_t byte = (volt>>2) & 0xff;	// logical shift
 	return byte;	// ldr aangesloten op PC1
 }

@@ -30,5 +30,5 @@ void transmit(uint8_t data) {
 
 uint8_t receive(void) {
 	loop_until_bit_is_set(UCSR0A, TXC0);	// loop totdat er iets binnen komt
-	return UDR0;
+	return UDR0;							// binnengekomen waarde is de return
 }
