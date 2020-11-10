@@ -1,3 +1,4 @@
+#import GUI
 import tkinter as tk
 from tkinter import font as tkfont
 from tkinter import *
@@ -16,11 +17,8 @@ from PIL import ImageTk, Image
 
 #Verbinding met Arduino
 import serial
-import time
 
-import os
-
-
+#COM6 weergeven op startpagina
 interface = ""
 
 # grafiek
@@ -29,8 +27,11 @@ fig2 = Figure(figsize=(50, 50), dpi=100)
 ax1 = fig.add_subplot(1, 1, 1)
 ax2 = fig2.add_subplot(1, 1, 1)
 
+#verbinding met arduino
 def connectArduino(i):
     global interface
+    #als bij de dropdownmenu op com6 klikt wordt een 1 meegegeven waardoor er
+    #verbinden wordt gemaakt met com6, met een 2 COM8
     if i == 1:
         arduinoData = serial.Serial('com6', 19200)
         interface = "COM6"
@@ -43,6 +44,8 @@ def connectArduino(i):
 
 # Cijfers lezen uit een text file voor de lichtsensor.
 def lichtsensorGraph(i):
+    #data wordt uit een txt file gehaald en gesplitst
+    #de gesplitste waardes worden in xar en yar gestopt
     pullData = open("Licht.txt", "r").read()
     dataArray = pullData.split('\n')
     xar = []
@@ -58,6 +61,8 @@ def lichtsensorGraph(i):
 
 # Cijfers lezen uit een text file voor de Temperatuursensor.
 def temperatuurGraph(i):
+    #data wordt uit een txt file gehaald en gesplitst
+    #de gesplitste waardes worden in xar en yar gestopt
     pullData = open("Temperatuur.txt", "r").read()
     dataArray = pullData.split('\n')
     xar = []
@@ -213,20 +218,24 @@ class PageThree(tk.Frame):
         inputUitrol = Entry(self, width=10, borderwidth=1)
         inputUitrol.place(relx=0.145, rely=0.301, anchor=W)
 
+        #De knop gebruikt de waarde van uitrollText en gebruikt de input
+        #in functie inputButtonText
         inputButton = tk.Button(self, text="Opslaan", command=lambda: inputButtonText(inputUitrol.get()))
         inputButton.place(relx=0.19, rely=0.3, anchor=W)
 
 
         def inputButtonText(input):
-
+            #Zonder input wordt er niks ingevoerd.
             if len(input) == 0:
                 opslaanText = tk.Label(self, text="Er is niks ingevoerd")
+            #Zo ja dan zijn worden de waardes opgeschreven in Afstand.txt
             elif str(input).isdigit():
                 opslaanText = tk.Label(self, text="Wijzigingen zijn opgeslagen")
                 file = open("Afstand.txt", "a")
-                file.truncate(0)# Zorgt ervoor dat Temperatuur.txt leeg wordt
+                file.truncate(0) # Zorgt ervoor dat Temperatuur.txt leeg wordt
                 file.write('\\x'+str(input))
                 file.close()
+            #als het geen cijfers zijn wordt het niet opgeslagen
             else:
                 opslaanText = tk.Label(self, text="Alleen cijfers toegestaan")
             opslaanText.place(relx=0.05, rely=0.322, anchor=W)
@@ -254,5 +263,4 @@ if __name__ == "__main__":
     ani = animation.FuncAnimation(fig, lichtsensorGraph, interval=60000)
     ani2 = animation.FuncAnimation(fig2, temperatuurGraph, interval=60000)
     # runt klasse 'app'
-    
     app.mainloop()
